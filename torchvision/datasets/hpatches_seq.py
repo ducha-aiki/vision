@@ -130,11 +130,6 @@ class HPatchesSeq(data.Dataset):
 def read_images_and_homographies(data_dir, image_ext, valid_list):
     """Return a Tensor containing the patches
     """
-    def PIL2array(_img):
-        """Convert PIL image type to numpy 2D array
-        """
-        return np.array(_img.getdata(), dtype=np.uint8).squeeze()
-
     ref_images = []
     warped_images = []
     homographies = []
@@ -144,11 +139,11 @@ def read_images_and_homographies(data_dir, image_ext, valid_list):
             continue
         current_files = []
         for fname  in os.listdir(os.path.join(data_dir, file_dir)):
-            print(fname)
             if fname.endswith(image_ext):
                 current_files.append(os.path.join(os.path.join(data_dir, file_dir), fname))
-            sorted(current_files)
-        ref_img  =  np.array(Image.open(current_files[0])).mean(axis = 2)
+        current_files = sorted(current_files)
+        ref_img_fname = current_files[0]
+        ref_img  =  np.array(Image.open(ref_img_fname)).mean(axis = 2)
         h,w = ref_img.shape
         ref_img = ref_img.reshape((1,1,h,w))
         for i in range(1, len(current_files)):

@@ -7,9 +7,11 @@ from .mnist import MNIST
 from .svhn import SVHN
 from .phototour import PhotoTour
 from .fakedata import FakeData
+from .hpatches_seq import HPatchesSeq
+
 
 __all__ = ('LSUN', 'LSUNClass',
            'ImageFolder', 'FakeData',
            'CocoCaptions', 'CocoDetection',
            'CIFAR10', 'CIFAR100',
-           'MNIST', 'STL10', 'SVHN', 'PhotoTour')
+           'MNIST', 'STL10', 'SVHN', 'PhotoTour', 'HPatchesSeq')

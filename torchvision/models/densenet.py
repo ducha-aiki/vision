@@ -8,16 +8,16 @@ __all__ = ['DenseNet', 'densenet121', 'densenet169', 'densenet201', 'densenet161
 
 
 model_urls = {
-    'densenet121': 'https://download.pytorch.org/models/densenet121-241335ed.pth',
-    'densenet169': 'https://download.pytorch.org/models/densenet169-6f0f7f60.pth',
-    'densenet201': 'https://download.pytorch.org/models/densenet201-4c113574.pth',
-    'densenet161': 'https://download.pytorch.org/models/densenet161-17b70270.pth',
+    'densenet121': 'https://download.pytorch.org/models/densenet121-a639ec97.pth',
+    'densenet169': 'https://download.pytorch.org/models/densenet169-b2777c0a.pth',
+    'densenet201': 'https://download.pytorch.org/models/densenet201-c1103571.pth',
+    'densenet161': 'https://download.pytorch.org/models/densenet161-8d451a50.pth',
 }
 
 
 def densenet121(pretrained=False, **kwargs):
     r"""Densenet-121 model from
-    `"Densely Connected Convolutional Networks" <https://arxiv.org/pdf/1608.06993.pdf>`
+    `"Densely Connected Convolutional Networks" <https://arxiv.org/pdf/1608.06993.pdf>`_
 
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
@@ -31,7 +31,7 @@ def densenet121(pretrained=False, **kwargs):
 
 def densenet169(pretrained=False, **kwargs):
     r"""Densenet-169 model from
-    `"Densely Connected Convolutional Networks" <https://arxiv.org/pdf/1608.06993.pdf>`
+    `"Densely Connected Convolutional Networks" <https://arxiv.org/pdf/1608.06993.pdf>`_
 
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
@@ -45,7 +45,7 @@ def densenet169(pretrained=False, **kwargs):
 
 def densenet201(pretrained=False, **kwargs):
     r"""Densenet-201 model from
-    `"Densely Connected Convolutional Networks" <https://arxiv.org/pdf/1608.06993.pdf>`
+    `"Densely Connected Convolutional Networks" <https://arxiv.org/pdf/1608.06993.pdf>`_
 
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
@@ -59,7 +59,7 @@ def densenet201(pretrained=False, **kwargs):
 
 def densenet161(pretrained=False, **kwargs):
     r"""Densenet-161 model from
-    `"Densely Connected Convolutional Networks" <https://arxiv.org/pdf/1608.06993.pdf>`
+    `"Densely Connected Convolutional Networks" <https://arxiv.org/pdf/1608.06993.pdf>`_
 
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
@@ -111,7 +111,7 @@ class _Transition(nn.Sequential):
 
 class DenseNet(nn.Module):
     r"""Densenet-BC model class, based on
-    `"Densely Connected Convolutional Networks" <https://arxiv.org/pdf/1608.06993.pdf>`
+    `"Densely Connected Convolutional Networks" <https://arxiv.org/pdf/1608.06993.pdf>`_
 
     Args:
         growth_rate (int) - how many filters to add each layer (`k` in paper)

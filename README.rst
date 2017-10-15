@@ -43,7 +43,7 @@ Datasets
 
 The following dataset loaders are available:
 
--  `MNIST <#mnist>`__
+-  `MNIST and FashionMNIST <#mnist>`__
 -  `COCO (Captioning and Detection) <#coco>`__
 -  `LSUN Classification <#lsun>`__
 -  `ImageFolder <#imagefolder>`__
@@ -76,6 +76,8 @@ but they all take the keyword args:
 MNIST
 ~~~~~
 ``dset.MNIST(root, train=True, transform=None, target_transform=None, download=False)``
+
+``dset.FashionMNIST(root, train=True, transform=None, target_transform=None, download=False)``
 
 ``root``: root directory of dataset where ``processed/training.pt`` and ``processed/test.pt`` exist
 
@@ -174,6 +176,10 @@ STL10
 SVHN
 ~~~~
 
+Note: The SVHN dataset assigns the label `10` to the digit `0`. However, in this Dataset,
+we assign the label `0` to the digit `0` to be compatible with PyTorch loss functions which
+expect the class labels to be in the range `[0, C-1]`
+
 ``dset.SVHN(root, split='train', transform=None, target_transform=None, download=False)``
 
 -  ``root`` : root directory of dataset where there is folder ``SVHN``
@@ -247,6 +253,8 @@ architectures:
    ResNet-50, ResNet-101, ResNet-152
 -  `SqueezeNet <https://arxiv.org/abs/1602.07360>`__: SqueezeNet 1.0, and
    SqueezeNet 1.1
+-  `DenseNet <https://arxiv.org/pdf/1608.06993.pdf>`__: DenseNet-128, DenseNet-169, DenseNet-201 and DenseNet-161
+-  `Inception v3 <https://arxiv.org/abs/1512.00567>`__ : Inception v3
 
 You can construct a model with random weights by calling its
 constructor:
@@ -258,9 +266,11 @@ constructor:
     alexnet = models.alexnet()
     vgg16 = models.vgg16()
     squeezenet = models.squeezenet1_0()
+    densenet = models.densenet161()
+    inception = models.inception_v3()
 
 We provide pre-trained models for the ResNet variants, SqueezeNet 1.0 and 1.1,
-and AlexNet, using the PyTorch `model zoo <http://pytorch.org/docs/model_zoo.html>`__.
+AlexNet, VGG, Inception v3 and DenseNet using the PyTorch `model zoo <http://pytorch.org/docs/model_zoo.html>`__.
 These can be constructed by passing ``pretrained=True``:
 
 .. code:: python
@@ -269,16 +279,19 @@ These can be constructed by passing ``pretrained=True``:
     resnet18 = models.resnet18(pretrained=True)
     alexnet = models.alexnet(pretrained=True)
     squeezenet = models.squeezenet1_0(pretrained=True)
-
+    vgg16 = models.vgg16(pretrained=True)
+    densenet = models.densenet161(pretrained=True)
+    inception = models.inception_v3(pretrained=True)
+    
 
 All pre-trained models expect input images normalized in the same way, i.e.
 mini-batches of 3-channel RGB images of shape (3 x H x W), where H and W are expected
-to be atleast 224.
+to be at least 224.
 
 The images have to be loaded in to a range of [0, 1] and then
 normalized using `mean=[0.485, 0.456, 0.406]` and `std=[0.229, 0.224, 0.225]`
 
-An example of such normalization can be found in `the imagenet example here` <https://github.com/pytorch/examples/blob/42e5b996718797e45c46a25c55b031e6768f8440/imagenet/main.py#L89-L101>
+An example of such normalization can be found in the imagenet example `here <https://github.com/pytorch/examples/blob/42e5b996718797e45c46a25c55b031e6768f8440/imagenet/main.py#L89-L101>`__
 
 Transforms
 ==========
@@ -364,6 +377,18 @@ Transforms on torch.\*Tensor
 Given mean: (R, G, B) and std: (R, G, B), will normalize each channel of
 the torch.\*Tensor, i.e. channel = (channel - mean) / std
 
+``LinearTransformation(transformation_matrix)``
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+Given ``transformation_matrix`` (D x D), where D = (C x H x W), will compute its
+dot product with the flattened torch.\*Tensor and then reshape it to its
+original dimensions.
+
+Applications:
+- whitening: zero-center the data, compute the data covariance matrix [D x D] with 
+np.dot(X.T, X), perform SVD on this matrix and pass the principal components as 
+transformation_matrix.
+
 Conversion Transforms
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -390,32 +415,32 @@ For example:
 Utils
 =====
 
-make\_grid(tensor, nrow=8, padding=2, normalize=False, range=None, scale\_each=False, pad\_value=0)
+``make_grid(tensor, nrow=8, padding=2, normalize=False, range=None, scale_each=False, pad_value=0)``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Given a 4D mini-batch Tensor of shape (B x C x H x W),
 or a list of images all of the same size,
 makes a grid of images
 
-normalize=True will shift the image to the range (0, 1),
+``normalize=True`` will shift the image to the range (0, 1),
 by subtracting the minimum and dividing by the maximum pixel value.
 
-if range=(min, max) where min and max are numbers, then these numbers are used to
+if ``range=(min, max)`` where ``min`` and ``max`` are numbers, then these numbers are used to
 normalize the image.
 
-scale_each=True will scale each image in the batch of images separately rather than
-computing the (min, max) over all images.
+``scale_each=True`` will scale each image in the batch of images separately rather than
+computing the ``(min, max)`` over all images.
 
-pad_value=<float> sets the value for the padded pixels.
+``pad_value=<float>`` sets the value for the padded pixels.
 
-`Example usage is given in this notebook` <https://gist.github.com/anonymous/bf16430f7750c023141c562f3e9f2a91>
+Example usage is given in this `notebook <https://gist.github.com/anonymous/bf16430f7750c023141c562f3e9f2a91>`__ 
 
-save\_image(tensor, filename, nrow=8, padding=2, normalize=False, range=None, scale\_each=False, pad\_value=0)
+``save_image(tensor, filename, nrow=8, padding=2, normalize=False, range=None, scale_each=False, pad_value=0)``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Saves a given Tensor into an image file.
 
 If given a mini-batch tensor, will save the tensor as a grid of images.
 
-All options after `filename` are passed through to `make_grid`. Refer to it's documentation for
+All options after ``filename`` are passed through to ``make_grid``. Refer to it's documentation for
 more details

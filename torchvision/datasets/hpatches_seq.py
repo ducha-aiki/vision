@@ -152,7 +152,6 @@ def read_images_and_homographies(data_dir, image_ext, valid_list):
             h1,w1 = warped_img.shape
             warped_img = warped_img.reshape((1,1,h1,w1))
             h_fname = os.path.join(os.path.join(data_dir, file_dir), 'H_1_' + str(i+1))
-            #print ref_img_fname, curr_fname, h_fname
             H = torch.FloatTensor(np.loadtxt(h_fname))
             ref_images.append(torch.ByteTensor(ref_img))
             warped_images.append(torch.ByteTensor(warped_img))

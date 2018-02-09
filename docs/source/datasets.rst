@@ -30,6 +30,16 @@ MNIST
 
 .. autoclass:: MNIST
 
+Fashion-MNIST
+~~~~~~~~~~~~~
+
+.. autoclass:: FashionMNIST
+
+EMNIST
+~~~~~~
+
+.. autoclass:: EMNIST
+
 COCO
 ~~~~
 
@@ -85,6 +95,8 @@ CIFAR
 .. autoclass:: CIFAR10
   :members: __getitem__
   :special-members:
+
+.. autoclass:: CIFAR100
 
 STL10
 ~~~~~

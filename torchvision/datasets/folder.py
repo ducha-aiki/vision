@@ -4,14 +4,20 @@ from PIL import Image
 import os
 import os.path
 
-IMG_EXTENSIONS = [
-    '.jpg', '.JPG', '.jpeg', '.JPEG',
-    '.png', '.PNG', '.ppm', '.PPM', '.bmp', '.BMP',
-]
+IMG_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.ppm', '.bmp', '.pgm']
 
 
 def is_image_file(filename):
-    return any(filename.endswith(extension) for extension in IMG_EXTENSIONS)
+    """Checks if a file is an image.
+
+    Args:
+        filename (string): path to a file
+
+    Returns:
+        bool: True if the filename ends with a known image extension
+    """
+    filename_lower = filename.lower()
+    return any(filename_lower.endswith(ext) for ext in IMG_EXTENSIONS)
 
 
 def find_classes(dir):
@@ -42,8 +48,8 @@ def make_dataset(dir, class_to_idx):
 def pil_loader(path):
     # open path as file to avoid ResourceWarning (https://github.com/python-pillow/Pillow/issues/835)
     with open(path, 'rb') as f:
-        with Image.open(f) as img:
-            return img.convert('RGB')
+        img = Image.open(f)
+        return img.convert('RGB')
 
 
 def accimage_loader(path):
@@ -123,3 +129,13 @@ class ImageFolder(data.Dataset):
 
     def __len__(self):
         return len(self.imgs)
+
+    def __repr__(self):
+        fmt_str = 'Dataset ' + self.__class__.__name__ + '\n'
+        fmt_str += '    Number of datapoints: {}\n'.format(self.__len__())
+        fmt_str += '    Root Location: {}\n'.format(self.root)
+        tmp = '    Transforms (if any): '
+        fmt_str += '{0}{1}\n'.format(tmp, self.transform.__repr__().replace('\n', '\n' + ' ' * len(tmp)))
+        tmp = '    Target Transforms (if any): '
+        fmt_str += '{0}{1}'.format(tmp, self.target_transform.__repr__().replace('\n', '\n' + ' ' * len(tmp)))
+        return fmt_str

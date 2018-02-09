@@ -2,7 +2,6 @@ from __future__ import print_function
 from PIL import Image
 import os
 import os.path
-import errno
 import numpy as np
 import sys
 if sys.version_info[0] == 2:
@@ -32,7 +31,7 @@ class CIFAR10(data.Dataset):
 
     """
     base_folder = 'cifar-10-batches-py'
-    url = "http://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz"
+    url = "https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz"
     filename = "cifar-10-python.tar.gz"
     tgz_md5 = 'c58f30108f718f92721af3b95e74349a'
     train_list = [
@@ -159,10 +158,26 @@ class CIFAR10(data.Dataset):
         tar.close()
         os.chdir(cwd)
 
+    def __repr__(self):
+        fmt_str = 'Dataset ' + self.__class__.__name__ + '\n'
+        fmt_str += '    Number of datapoints: {}\n'.format(self.__len__())
+        tmp = 'train' if self.train is True else 'test'
+        fmt_str += '    Split: {}\n'.format(tmp)
+        fmt_str += '    Root Location: {}\n'.format(self.root)
+        tmp = '    Transforms (if any): '
+        fmt_str += '{0}{1}\n'.format(tmp, self.transform.__repr__().replace('\n', '\n' + ' ' * len(tmp)))
+        tmp = '    Target Transforms (if any): '
+        fmt_str += '{0}{1}'.format(tmp, self.target_transform.__repr__().replace('\n', '\n' + ' ' * len(tmp)))
+        return fmt_str
+
 
 class CIFAR100(CIFAR10):
+    """`CIFAR100 <https://www.cs.toronto.edu/~kriz/cifar.html>`_ Dataset.
+
+    This is a subclass of the `CIFAR10` Dataset.
+    """
     base_folder = 'cifar-100-python'
-    url = "http://www.cs.toronto.edu/~kriz/cifar-100-python.tar.gz"
+    url = "https://www.cs.toronto.edu/~kriz/cifar-100-python.tar.gz"
     filename = "cifar-100-python.tar.gz"
     tgz_md5 = 'eb9058c3a382ffc7106e4002c42a8d85'
     train_list = [

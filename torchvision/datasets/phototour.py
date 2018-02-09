@@ -24,26 +24,43 @@ class PhotoTour(data.Dataset):
 
     """
     urls = {
+        'notredame_harris': [
+            'http://matthewalunbrown.com/patchdata/notredame_harris.zip',
+            'notredame_harris.zip',
+            '69f8c90f78e171349abdf0307afefe4d'
+        ],
+        'yosemite_harris': [
+            'http://matthewalunbrown.com/patchdata/yosemite_harris.zip',
+            'yosemite_harris.zip',
+            'a73253d1c6fbd3ba2613c45065c00d46'
+        ],
+        'liberty_harris': [
+            'http://matthewalunbrown.com/patchdata/liberty_harris.zip',
+            'liberty_harris.zip',
+            'c731fcfb3abb4091110d0ae8c7ba182c'
+        ],
         'notredame': [
-            'http://www.iis.ee.ic.ac.uk/~vbalnt/phototourism-patches/notredame.zip',
+            'http://icvl.ee.ic.ac.uk/vbalnt/notredame.zip',
             'notredame.zip',
             '509eda8535847b8c0a90bbb210c83484'
         ],
         'yosemite': [
-            'http://www.iis.ee.ic.ac.uk/~vbalnt/phototourism-patches/yosemite.zip',
+            'http://icvl.ee.ic.ac.uk/vbalnt/yosemite.zip',
             'yosemite.zip',
             '533b2e8eb7ede31be40abc317b2fd4f0'
         ],
         'liberty': [
-            'http://www.iis.ee.ic.ac.uk/~vbalnt/phototourism-patches/liberty.zip',
+            'http://icvl.ee.ic.ac.uk/vbalnt/liberty.zip',
             'liberty.zip',
             'fdd9152f138ea5ef2091746689176414'
         ],
     }
-    mean = {'notredame': 0.4854, 'yosemite': 0.4844, 'liberty': 0.4437}
-    std = {'notredame': 0.1864, 'yosemite': 0.1818, 'liberty': 0.2019}
-    lens = {'notredame': 468159, 'yosemite': 633587, 'liberty': 450092}
-
+    mean = {'notredame': 0.4854, 'yosemite': 0.4844, 'liberty': 0.4437,
+            'notredame_harris': 0.4854, 'yosemite_harris': 0.4844, 'liberty_harris': 0.4437}
+    std = {'notredame': 0.1864, 'yosemite': 0.1818, 'liberty': 0.2019,
+           'notredame_harris': 0.1864, 'yosemite_harris': 0.1818, 'liberty_harris': 0.2019}
+    lens = {'notredame': 468159, 'yosemite': 633587, 'liberty': 450092,
+            'liberty_harris': 379587, 'yosemite_harris': 450912, 'notredame_harris': 325295}
     image_ext = 'bmp'
     info_file = 'info.txt'
     matches_files = 'm50_100000_100000_0.txt'
@@ -57,7 +74,6 @@ class PhotoTour(data.Dataset):
 
         self.train = train
         self.transform = transform
-
         self.mean = self.mean[name]
         self.std = self.std[name]
 
@@ -135,6 +151,16 @@ class PhotoTour(data.Dataset):
 
         with open(self.data_file, 'wb') as f:
             torch.save(dataset, f)
+
+    def __repr__(self):
+        fmt_str = 'Dataset ' + self.__class__.__name__ + '\n'
+        fmt_str += '    Number of datapoints: {}\n'.format(self.__len__())
+        tmp = 'train' if self.train is True else 'test'
+        fmt_str += '    Split: {}\n'.format(tmp)
+        fmt_str += '    Root Location: {}\n'.format(self.root)
+        tmp = '    Transforms (if any): '
+        fmt_str += '{0}{1}'.format(tmp, self.transform.__repr__().replace('\n', '\n' + ' ' * len(tmp)))
+        return fmt_str
 
 
 def read_image_file(data_dir, image_ext, n):
